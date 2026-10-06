@@ -9,6 +9,10 @@ const PORT = process.env.PORT || 3000;
 
 app.use(express.json());
 
+app.get('/', (req, res) => {
+    res.send('Hello, World!');
+});
+
 app.get('/api/diakok', async (req,res) => {
     try {
         const [rows] = await db.query('SELECT * FROM diakok');
