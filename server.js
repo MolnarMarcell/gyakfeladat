@@ -22,6 +22,10 @@ app.get('/api/diakok', async (req,res) => {
     }
 });
 
+
+
+
+
 app.post('/api/diakok', async (req, res) => {
     const {nev,szak} = req.body;
     if (!nev || !szak) {
@@ -65,6 +69,34 @@ app.delete('/api/diakok/:id', async (req,res) => {
         res.status(500).json({ hiba: 'Adatbázis hiba történt' });
     }
 })
+
+
+
+//-----------------PLUSZ RÉSZLEG----------------------
+app.get('/api/diakok/:id', async (req,res) => {
+    const id = Number(req.params.id);
+    try {
+        const [rows] = await db.query('SELECT * FROM diakok WHERE id = ?', [id]);
+        if (rows.length === 0) {
+            return res.status(404).json({ hiba: 'A megadott ID-hoz nem tartozik diák' });
+        }
+        res.status(200).json(rows[0]);
+    } catch (error) {
+        res.status(500).json({ hiba: 'Adatbázis hiba történt' });
+    }
+})
+
+app.get('/api/statisztika', async (req,res) => {
+    try {
+        const [rows] = await db.query('SELECT szak, COUNT(*) AS letszam FROM diakok group BY szak;')
+        res.status(200).json(rows)
+    }
+    catch (error) {
+        res.status(500).json({hiba: "Adatbázis hiba történt"})
+    }
+})
+
+//-----------------PLUSZ RÉSZLEG----------------------
 
 
 
